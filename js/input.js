@@ -1,6 +1,5 @@
 /*
 TODOS:
-    -lerp between deltas for smoother transforms
     -draw petting path
     -"pet me" prompt
     -cat paw cursor
@@ -10,9 +9,8 @@ TODOS:
 /* globals
 ---------------------------------------------------------------------*/
 var center = view.bounds.center;
-tool.minDistance = 10;
-var force = 5;
-var path;
+var scalar = 2;
+var path, last;
 
 
 /* init
@@ -21,10 +19,13 @@ var path;
 
 /* events
 ---------------------------------------------------------------------*/
+tool.minDistance = 10;
+tool.maxDistance = 50;
 
 function onMouseDown(event) {
     path = new Path();
     path.strokeColor = 'white';
+    console.log("touch start");
 
     // path.add(event.point);
 }
@@ -33,14 +34,19 @@ function onMouseDrag(event) {
     // path.add(event.point);
 
     var delta = event.delta.normalize();
-    // console.log(delta.x+ "," + delta.y);
+    var force = (last) ? last + delta : delta;
+
+    // console.log("DELTA: " + delta.x + ", " + delta.y);
+    console.log("FORCE : " + force.x + ", " + force.y);
+    
+    force *= scalar;
 
     $('#gif').css({
-        // transform: "translate(" + (force * delta.x) + "px," + (force * delta.y) + "px)"
-        transform: transformMatrix(force * delta.x, force * delta.y, 1.15)
+        transform: transformMatrix(force.x, force.y, 1.15)
     });
 
-    console.log(transformMatrix(force * delta.x, force * delta.y, 1.15));
+    // console.log(transformMatrix(force.x, force.y, 1.15));
+    // console.log("FORCE: " + force.x + ", " + force.y);
 
     // var step = event.delta;
     // step.angle += 90;
@@ -52,10 +58,13 @@ function onMouseDrag(event) {
     // line.strokeColor = 'white';
     // line.add(top);
     // line.add(bottom);
+
+    last = delta;
 }
 
 function onMouseUp(event) {
     $('#gif').css({ transform: transformMatrix(0, 0, 1.15) });
+    console.log("touch end");
 }
 
 function onResize() {
