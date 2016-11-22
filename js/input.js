@@ -10,7 +10,7 @@ TODOS:
 ---------------------------------------------------------------------*/
 var center = view.bounds.center;
 var scalar = 2;
-var path, last;
+var path, lastDelta;
 
 
 /* init
@@ -24,30 +24,71 @@ tool.maxDistance = 50;
 
 function onMouseDown(event) {
     console.log("touch start");
+
+    $('canvas').toggleClass('canvas--input');
+
+    var top = new Path();
+
+    path = new CompoundPath({
+        children: [
+            new Path({
+                name: 'top'
+            }),
+            new Path({
+                name: 'bottom'
+            })
+        ],
+        strokeWidth: 5,
+        strokeColor: 'white'
+    });
+
+    // path.selected = true;
 }
 
 function onMouseDrag(event) {
     var delta = event.delta.normalize();
-    var force = (last) ? last + delta : delta;
+    var force = (lastDelta) ? lastDelta + delta : delta;
+    var top = path.children['top'];
+    var bottom = path.children['bottom'];
 
     // console.log("DELTA: " + delta.x + ", " + delta.y);
-    console.log("FORCE : " + force.x + ", " + force.y);
-    
+    // console.log("FORCE : " + force.x + ", " + force.y);
+
     force *= scalar;
 
     $('#gif').css({
         transform: transformMatrix(force.x, force.y, 1.15)
     });
 
+    var step = event.delta;
+    step.angle += 90;
+
+    top.add(event.middlePoint + step);
+    bottom.add(event.middlePoint - step);
+
+    path.strokeColor = {
+        hue: Math.random() * 360,
+        saturation: 1,
+        brightness: 1
+    };
+    path.strokeWidth = Math.random() * 100;
+    // path.smooth();
+
     // console.log(transformMatrix(force.x, force.y, 1.15));
     // console.log("FORCE: " + force.x + ", " + force.y);
 
-    last = delta;
+    lastDelta = delta;
 }
 
 function onMouseUp(event) {
     console.log("touch end");
+
+    $('canvas').toggleClass('canvas--input');
+
+    // path.smooth();
+    path.strokeWidth = 0;
     $('#gif').css({ transform: transformMatrix(0, 0, 1.15) });
+    displayCat();
 }
 
 function onResize() {

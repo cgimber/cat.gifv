@@ -14,8 +14,7 @@ body {
   font-family: 'Rubik', sans-serif;
   font-size: 1.6rem;
   font-weight: normal;
-  background: black;
-  cursor: pointer; }
+  background: black; }
 
 ::-moz-selection {
   background: #b3d4fc;
@@ -83,7 +82,10 @@ textarea {
 canvas {
   width: 100%;
   height: 100%;
-  position: absolute; }
+  position: absolute;
+  cursor: -webkit-grab; }
+  canvas.canvas--input {
+    cursor: -webkit-grabbing; }
 
 /* ==========================================================================
    Media Queries
