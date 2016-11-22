@@ -1,6 +1,6 @@
 /*
 TODOS:
-    -draw petting path
+    -pet-o-meter
     -"pet me" prompt
     -cat paw cursor
     -purring sounds
@@ -9,8 +9,11 @@ TODOS:
 /* globals
 ---------------------------------------------------------------------*/
 var center = view.bounds.center;
-var scalar = 2;
 var path, lastDelta;
+var CONSTANTS = {
+    max_force: 2,
+    max_segments: 5
+};
 
 
 /* init
@@ -20,62 +23,49 @@ var path, lastDelta;
 /* events
 ---------------------------------------------------------------------*/
 tool.minDistance = 10;
-tool.maxDistance = 50;
+tool.maxDistance = 20;
 
 function onMouseDown(event) {
     console.log("touch start");
 
     $('canvas').toggleClass('canvas--input');
 
-    var top = new Path();
-
-    path = new CompoundPath({
-        children: [
-            new Path({
-                name: 'top'
-            }),
-            new Path({
-                name: 'bottom'
-            })
-        ],
-        strokeWidth: 5,
-        strokeColor: 'white'
+    path = new Path({
+        segments: [event.point],
+        // selected: true,
+        complete: false,
+        strokeWidth: 44,
+        strokeCap: 'round',
+        strokeColor: {
+            hue: 0,
+            saturation: 1,
+            brightness: 1,
+            alpha: 0.5
+        }
     });
 
-    // path.selected = true;
 }
 
 function onMouseDrag(event) {
+    // exert force on the gif
     var delta = event.delta.normalize();
     var force = (lastDelta) ? lastDelta + delta : delta;
-    var top = path.children['top'];
-    var bottom = path.children['bottom'];
-
-    // console.log("DELTA: " + delta.x + ", " + delta.y);
-    // console.log("FORCE : " + force.x + ", " + force.y);
-
-    force *= scalar;
+    force *= CONSTANTS.max_force;
 
     $('#gif').css({
         transform: transformMatrix(force.x, force.y, 1.15)
     });
 
-    var step = event.delta;
-    step.angle += 90;
+    // update the path
+    path.add(event.point);
+    if (path.segments.length >= CONSTANTS.max_segments) path.removeSegment(0);
+    path.smooth();
 
-    top.add(event.middlePoint + step);
-    bottom.add(event.middlePoint - step);
-
-    path.strokeColor = {
-        hue: Math.random() * 360,
-        saturation: 1,
-        brightness: 1
-    };
-    path.strokeWidth = Math.random() * 100;
-    // path.smooth();
-
-    // console.log(transformMatrix(force.x, force.y, 1.15));
-    // console.log("FORCE: " + force.x + ", " + force.y);
+    // var vector = path.clone();
+    // var gradientColor = new Color(new Gradient(['red', 'white']), vector.lastSegment, vector.firstSegment);
+    // vector.remove();
+    // path.strokeColor = gradientColor;
+    // console.log(path.strokeColor);
 
     lastDelta = delta;
 }
@@ -83,12 +73,48 @@ function onMouseDrag(event) {
 function onMouseUp(event) {
     console.log("touch end");
 
+    // reset the gif
     $('canvas').toggleClass('canvas--input');
-
-    // path.smooth();
-    path.strokeWidth = 0;
     $('#gif').css({ transform: transformMatrix(0, 0, 1.15) });
+
+    // complete the path
+    path.add(event.point);
+    path.smooth();
+    path.complete = true;
+    // path.simplify();
+
     displayCat();
+}
+
+function onFrame(event) {
+    var children = project.activeLayer.children;
+
+    for (var i = 0; i < children.length; i++) {
+        var child = children[i];
+
+        // if empty, remove this path
+        if (child.segments.length === 0) child.remove();
+        else {
+            // adjust it's color
+            var hue = child.strokeColor.hue;
+            if (hue >= 360) hue = 0;
+            else hue += 10;
+
+            child.strokeColor = {
+                hue: hue,
+                saturation: 1,
+                brightness: 1,
+                alpha: 0.5
+            };
+
+            // child.strokeColor.alpha -= 0.1;
+            // console.log(child.strokeColor.alpha);
+
+            // if complete, erode this path 
+            if (child.complete === true) child.removeSegment(0);
+        }
+    }
+
 }
 
 function onResize() {
