@@ -2,31 +2,44 @@
 TODOS:
     -pet-o-meter
     -"pet me" prompt
-    -cat paw cursor
     -purring sounds
+    -score popups?
+    -cat paw cursors?
 */
 
 /* globals
 ---------------------------------------------------------------------*/
 var center = view.bounds.center;
-var path, lastDelta;
+var path, lastDelta,
+    pet_o_meter;
+var touches = 0;
+var recievingInput = false;
 var CONSTANTS = {
     max_force: 2,
-    max_segments: 5
+    max_segments: 8,
+    touch_threshold: 100
 };
 
 
 /* init
 ---------------------------------------------------------------------*/
-
+// test = new Path.Ellipse({
+//     center: center,
+//     radius: 200,
+//     strokeWidth: 60,
+//     strokeColor: 'black',
+//     name: 'test'
+// });
 
 /* events
 ---------------------------------------------------------------------*/
-tool.minDistance = 10;
-tool.maxDistance = 20;
+// tool.minDistance = 10;
+// tool.maxDistance = 20;
+tool.fixedDistance = 10;
 
 function onMouseDown(event) {
     console.log("touch start");
+    recievingInput = true;
 
     $('canvas').toggleClass('canvas--input');
 
@@ -34,7 +47,7 @@ function onMouseDown(event) {
         segments: [event.point],
         // selected: true,
         complete: false,
-        strokeWidth: 44,
+        strokeWidth: 60,
         strokeCap: 'round',
         strokeColor: {
             hue: 0,
@@ -68,10 +81,12 @@ function onMouseDrag(event) {
     // console.log(path.strokeColor);
 
     lastDelta = delta;
+    touches++;
 }
 
 function onMouseUp(event) {
     console.log("touch end");
+    recievingInput = false;
 
     // reset the gif
     $('canvas').toggleClass('canvas--input');
@@ -83,7 +98,8 @@ function onMouseUp(event) {
     path.complete = true;
     // path.simplify();
 
-    displayCat();
+    // displayCat();
+    // console.log(touches);
 }
 
 function onFrame(event) {
@@ -92,33 +108,56 @@ function onFrame(event) {
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
 
-        // if empty, remove this path
-        if (child.segments.length === 0) child.remove();
-        else {
-            // adjust it's color
-            var hue = child.strokeColor.hue;
-            if (hue >= 360) hue = 0;
-            else hue += 10;
+        if (child.name != "pet_o_meter") {
+            // if empty, remove this path
+            if (child.segments.length === 0) child.remove();
+            else {
+                // adjust it's color
+                var hue = child.strokeColor.hue;
+                if (hue >= 360) hue = 0;
+                else hue += 10;
 
-            child.strokeColor = {
-                hue: hue,
-                saturation: 1,
-                brightness: 1,
-                alpha: 0.5
-            };
+                child.strokeColor = {
+                    hue: hue,
+                    saturation: 1,
+                    brightness: 1,
+                    alpha: 0.5
+                };
 
-            // child.strokeColor.alpha -= 0.1;
-            // console.log(child.strokeColor.alpha);
+                // child.strokeColor.alpha -= 0.1;
+                // console.log(child.strokeColor.alpha);
 
-            // if complete, erode this path 
-            if (child.complete === true) child.removeSegment(0);
+                // if complete, erode this path 
+                if (child.complete === true) child.removeSegment(0);
+            }
         }
     }
+
+    if (!recievingInput && touches > 0) {
+        touches--;
+    }
+
+    // update pet_o_meter
+    var x = map(touches, 0, CONSTANTS.touch_threshold, -view.bounds.width / 2, view.bounds.width / 2);
+    var posX = constrain(x, -view.bounds.width / 2, view.bounds.width / 2);
+    pet_o_meter.position.x = posX;
+
+    console.log(touches);
 
 }
 
 function onResize() {
+    // reset view dependant variables
     center = view.bounds.center;
+
+    // reset pet_o_meter
+    if (pet_o_meter) pet_o_meter.remove();
+    pet_o_meter = new Path.Rectangle({
+        point: view.bounds.bottomLeft + [0, -20],
+        size: [view.bounds.width, 20],
+        fillColor: 'white',
+        name: 'pet_o_meter'
+    });
 }
 
 /* functions
@@ -137,3 +176,11 @@ function transformMatrix(tx, ty, s) {
 //     cx = cy = 1;
 //     return "matrix(" + (sx * Math.cos(a)) + "," + (sy * Math.sin(a)) + "," + (-sx * Math.sin(a)) + "," + (sy * Math.cos(a)) + "," + ((-cx * Math.cos(a) + cy * Math.sin(a) + cx) * sx + tx) + "," + ((-cx * Math.sin(a) - cy * Math.cos(a) + cy) * sy + ty) + ")";
 // }
+
+function constrain(value, low, high) {
+    return Math.max(Math.min(value, high), low);
+}
+
+function map(value, start1, stop1, start2, stop2) {
+    return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+}
