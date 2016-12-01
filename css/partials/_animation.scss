@@ -1,0 +1,68 @@
+/* jittery squigglevision effect
+----------------------------------------------------------------------------- */
+
+@include keyframes(squiggles) {
+    0% {
+        @include filter(url("filters.svg#squiggly-1"));
+    }
+    25% {
+        @include filter(url("filters.svg#squiggly-2"));
+    }
+    50% {
+        @include filter(url("filters.svg#squiggly-3"));
+    }
+    75% {
+        @include filter(url("filters.svg#squiggly-4"));
+    }
+    100% {
+        @include filter(url("filters.svg#squiggly-5"));
+    }
+}
+
+
+/* noise effect
+----------------------------------------------------------------------------- */
+
+@include keyframes(noise) {
+    0%,
+    100% {
+        @include transform(translate(0,
+        0));
+    }
+    10% {
+        @include transform(translate(-5%,
+        -10%));
+    }
+    20% {
+        @include transform(translate(-15%,
+        5%));
+    }
+    30% {
+        @include transform(translate(7%,
+        -25%));
+    }
+    40% {
+        @include transform(translate(21%,
+        25%));
+    }
+    50% {
+        @include transform(translate(-25%,
+        10%));
+    }
+    60% {
+        @include transform(translate(15%,
+        0%));
+    }
+    70% {
+        @include transform(translate(0%,
+        15%));
+    }
+    80% {
+        @include transform(translate(25%,
+        30%));
+    }
+    90% {
+        @include transform(translate(-10%,
+        10%));
+    }
+}
