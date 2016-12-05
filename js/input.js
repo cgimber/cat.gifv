@@ -41,7 +41,7 @@ function onMouseDown(event) {
     console.log("touch start");
     recievingInput = true;
 
-    $('canvas').toggleClass('canvas--input');
+    $('canvas').addClass('canvas--input');
 
     path = new Path({
         segments: [event.point],
@@ -81,7 +81,17 @@ function onMouseDrag(event) {
     // console.log(path.strokeColor);
 
     lastDelta = delta;
-    touches++;
+
+    // state/touch dependent events
+    if (state === STATES.WAITING && (touches >= CONSTANTS.touch_threshold * 2 / 3)) {
+        // begin loading gif
+        state = STATES.LOADING;
+        getCat();
+    } else if (state === STATES.LOADED && touches >= CONSTANTS.touch_threshold) {
+        // update css and reset touches
+        updateGif(gifUrl);
+        touches = 0;
+    } else touches++;
 }
 
 function onMouseUp(event) {
@@ -89,7 +99,7 @@ function onMouseUp(event) {
     recievingInput = false;
 
     // reset the gif
-    $('canvas').toggleClass('canvas--input');
+    $('canvas').removeClass('canvas--input');
     $('#gif').css({ transform: transformMatrix(0, 0, 1.15) });
 
     // complete the path
@@ -142,7 +152,7 @@ function onFrame(event) {
     var posX = constrain(x, -view.bounds.width / 2, view.bounds.width / 2);
     pet_o_meter.position.x = posX;
 
-    console.log(touches);
+    // console.log(touches);
 
 }
 
