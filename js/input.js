@@ -82,12 +82,14 @@ function onMouseDrag(event) {
     lastDelta = delta;
 
     // state/touch dependent events
-    if (state === STATES.WAITING && (touches >= CONSTANTS.touch_threshold * 2 / 3)) {
+    if (state === STATES.WAITING && (touches >= CONSTANTS.touch_threshold * 1 / 2)) {
         // begin loading gif
+        console.log("load event:", state);
         state = STATES.LOADING;
         getCat();
     } else if (state === STATES.LOADED && touches >= CONSTANTS.touch_threshold) {
         // update css and reset touches
+        console.log("update event:", state);
         updateGif(gifUrl);
         touches = 0;
     } else if (touches < CONSTANTS.touch_threshold) touches++;
@@ -124,7 +126,7 @@ function onFrame(event) {
                 // adjust it's color
                 var hue = child.strokeColor.hue;
                 if (hue >= 360) child.strokeColor.hue = 0;
-                else child.strokeColor.hue += 10;                    
+                else child.strokeColor.hue += 10;
 
                 // child.strokeColor.alpha -= 0.1;
                 // console.log(child.strokeColor.alpha);

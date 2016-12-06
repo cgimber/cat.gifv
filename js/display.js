@@ -7,13 +7,14 @@ var STATES = {
 };
 if (Object.freeze) { Object.freeze(STATES); }
 var state = STATES.WAITING;
-var gifUrl;
+var loadTimer, gifUrl;
 
 /* document ready
 ---------------------------------------------------------------------*/
 $(document).ready(function() {
     getCat(function() {
         updateGif(gifUrl);
+        console.log("document ready:", state);
     });
 });
 
@@ -28,11 +29,11 @@ function getCat(callback) {
 
             console.log("load start");
             state = STATES.LOADING;
-            loadGif(gifUrl);
+            loadGif(gifUrl, callback);
         })
         .done(function() {
             // console.log("done");
-            if (callback) callback();
+            // if (callback) callback();
         })
         .fail(function(e) {
             console.error(e);
@@ -42,12 +43,20 @@ function getCat(callback) {
         });
 }
 
-function loadGif(url) {
+function loadGif(url, callback) {
+    // preload the gif in another element and then update the state
     $('<img/>').attr('src', url).on('load', function() {
+        if (loadTimer) window.clearTimeout(loadTimer);
         console.log("load end");
         $(this).remove();
         state = STATES.LOADED;
+        if (callback) callback();
     });
+    // stop waiting if it takes longer than 1sec
+    loadTimer = window.setTimeout(function() {
+        console.log("load time out");
+        state = STATES.LOADED;
+    }, 2000);
 }
 
 function updateGif(url) {
