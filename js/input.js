@@ -1,6 +1,5 @@
 /*
 TODOS:
-    -pet-o-meter
     -"pet me" prompt
     -purring sounds
     -score popups?
@@ -17,7 +16,8 @@ var recievingInput = false;
 var CONSTANTS = {
     max_force: 2,
     max_segments: 8,
-    touch_threshold: 100
+    touch_threshold: 100,
+    meter_height: 20
 };
 
 
@@ -56,7 +56,6 @@ function onMouseDown(event) {
             alpha: 0.5
         }
     });
-
 }
 
 function onMouseDrag(event) {
@@ -91,7 +90,7 @@ function onMouseDrag(event) {
         // update css and reset touches
         updateGif(gifUrl);
         touches = 0;
-    } else touches++;
+    } else if (touches < CONSTANTS.touch_threshold) touches++;
 }
 
 function onMouseUp(event) {
@@ -124,15 +123,8 @@ function onFrame(event) {
             else {
                 // adjust it's color
                 var hue = child.strokeColor.hue;
-                if (hue >= 360) hue = 0;
-                else hue += 10;
-
-                child.strokeColor = {
-                    hue: hue,
-                    saturation: 1,
-                    brightness: 1,
-                    alpha: 0.5
-                };
+                if (hue >= 360) child.strokeColor.hue = 0;
+                else child.strokeColor.hue += 10;                    
 
                 // child.strokeColor.alpha -= 0.1;
                 // console.log(child.strokeColor.alpha);
@@ -153,7 +145,6 @@ function onFrame(event) {
     pet_o_meter.position.x = posX;
 
     // console.log(touches);
-
 }
 
 function onResize() {
@@ -163,9 +154,14 @@ function onResize() {
     // reset pet_o_meter
     if (pet_o_meter) pet_o_meter.remove();
     pet_o_meter = new Path.Rectangle({
-        point: view.bounds.bottomLeft + [0, -20],
-        size: [view.bounds.width, 20],
-        fillColor: 'white',
+        point: view.bounds.topLeft,
+        size: [view.bounds.width, CONSTANTS.meter_height],
+        fillColor: {
+            hue: 0,
+            saturation: 0,
+            brightness: 1,
+            alpha: 0.95
+        },
         name: 'pet_o_meter'
     });
 }
