@@ -2,11 +2,15 @@
 @import '../vendor/bourbon/bourbon';
 
 // google fonts
-@import url('https://fonts.googleapis.com/css?family=Rubik:300,400');
+@import url('https://fonts.googleapis.com/css?family=Fredoka+One');
+// @import url('https://fonts.googleapis.com/css?family=Chela+One');
 
 // font variables
-$base-font-family: 'Rubik';
-$light: 300;
+
+$base-font-family: 'Fredoka One';
+// $base-font-family: 'Chela One';
+$fallback-font-family: cursive;
+// $light: 300;
 $regular: 400;
 // $bold: 600;
 

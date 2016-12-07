@@ -27,30 +27,56 @@
     background-position: center center;
     background-size: cover;
     transform: scale(1.15);
+    z-index: 0;
+}
+
+.modal {
+    position: fixed;
+    @include display(flex);
+    @include flex-direction(column);
+    @include justify-content(center);
+    @include align-items(center);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    text-shadow: black 1px 1px;
+    letter-spacing: 0.05em;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.modal__title {
+    font-size: 3em;
+    text-align: center;
+}
+
+.modal__subtitle {
+    font-size: 1.5em;
 }
 
 canvas {
     width: 100%;
     height: 100%;
     position: absolute;
-    @include animation(squiggles 0.3s infinite alternate);
+    // @include animation(squiggles 0.3s infinite alternate);
+    z-index: 2;
     cursor: -webkit-grab;
     &.canvas--input {
         cursor: -webkit-grabbing;
     }
 }
 
-.iOS canvas {
-    @include animation(none);
-}
-
+// .iOS canvas {
+//     @include animation(none);
+// }
 .noise {
     position: absolute;
     width: 100%;
     height: 100%;
     overflow: hidden;
     pointer-events: none;
-    z-index: 7;
+    z-index: 10;
 }
 
 .noise:after {

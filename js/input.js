@@ -1,6 +1,5 @@
 /*
 TODOS:
-    -"pet me" prompt
     -purring sounds
     -score popups?
     -cat paw cursors?
@@ -10,14 +9,18 @@ TODOS:
 ---------------------------------------------------------------------*/
 var center = view.bounds.center;
 var path, lastDelta,
+    prompt, promptTimer,
     pet_o_meter;
 var touches = 0;
 var recievingInput = false;
 var CONSTANTS = {
     max_force: 2,
     max_segments: 8,
+    fade: 0.2,
     touch_threshold: 100,
-    meter_height: 20
+    meter_height: 20,
+    prompt_rate: 0.5,
+    prompt_direction: "down" // down or random (default)
 };
 
 
@@ -30,6 +33,8 @@ var CONSTANTS = {
 //     strokeColor: 'black',
 //     name: 'test'
 // });
+startPrompt();
+promptTimer = window.setInterval(startPrompt, 4000);
 
 /* events
 ---------------------------------------------------------------------*/
@@ -41,9 +46,15 @@ function onMouseDown(event) {
     console.log("touch start");
     recievingInput = true;
 
+    if (event.count === 1) {
+        clearInterval(promptTimer);
+        $('.modal').fadeOut();
+    }
+
     $('canvas').addClass('canvas--input');
 
     path = new Path({
+        name: 'input',
         segments: [event.point],
         // selected: true,
         complete: false,
@@ -56,6 +67,7 @@ function onMouseDown(event) {
             alpha: 0.5
         }
     });
+    path.fade = path.strokeColor.alpha / (CONSTANTS.max_segments / 2);
 }
 
 function onMouseDrag(event) {
@@ -114,8 +126,23 @@ function onMouseUp(event) {
 }
 
 function onFrame(event) {
-    var children = project.activeLayer.children;
+    // update the prompt
+    if (!prompt.complete && event.count % (1 / CONSTANTS.prompt_rate) === 0) {
+        var x, y;
+        if (CONSTANTS.prompt_direction === "down") {
+            x = 0;
+            y = 10;
+        } else {
+            x = (Math.random() < 0.5) ? getRandom(-10, -5) : getRandom(5, 10);
+            y = getRandom(5, 10);
+        }
+        prompt.add(prompt.lastSegment.point + new Point(x, y));
+        if (prompt.segments.length >= CONSTANTS.max_segments) prompt.removeSegment(0);
+        prompt.smooth();
+    }
 
+    // update touch path
+    var children = project.activeLayer.children;
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
 
@@ -123,23 +150,28 @@ function onFrame(event) {
             // if empty, remove this path
             if (child.segments.length === 0) child.remove();
             else {
-                // adjust it's color
-                var hue = child.strokeColor.hue;
-                if (hue >= 360) child.strokeColor.hue = 0;
-                else child.strokeColor.hue += 10;
+                if (child.name === "input") {
+                    // adjust it's color
+                    var hue = child.strokeColor.hue;
+                    if (hue >= 360) child.strokeColor.hue = 0;
+                    else child.strokeColor.hue += 10;
+                }
 
                 // child.strokeColor.alpha -= 0.1;
                 // console.log(child.strokeColor.alpha);
 
                 // if complete, erode this path 
-                if (child.complete === true) child.removeSegment(0);
+                if (child.complete === true) {
+                    // console.log(child.fade * (1 / child.segments.length));
+                    child.strokeColor.alpha -= child.fade * (1 / child.segments.length);
+                    child.removeSegment(0);
+                }
             }
         }
     }
 
-    if (!recievingInput && touches > 0) {
-        touches--;
-    }
+    // decrement touches when not recieving input
+    if (!recievingInput && touches > 0) touches--;
 
     // update pet_o_meter
     var x = map(touches, 0, CONSTANTS.touch_threshold, -view.bounds.width / 2, view.bounds.width / 2);
@@ -156,6 +188,7 @@ function onResize() {
     // reset pet_o_meter
     if (pet_o_meter) pet_o_meter.remove();
     pet_o_meter = new Path.Rectangle({
+        name: 'pet_o_meter',
         point: view.bounds.topLeft,
         size: [view.bounds.width, CONSTANTS.meter_height],
         fillColor: {
@@ -163,13 +196,36 @@ function onResize() {
             saturation: 0,
             brightness: 1,
             alpha: 0.95
-        },
-        name: 'pet_o_meter'
+        }
     });
 }
 
 /* functions
 ---------------------------------------------------------------------*/
+
+function startPrompt() {
+    console.log("start prompt");
+
+    prompt = new Path({
+        name: 'prompt',
+        segments: [center * [1, 1.5]],
+        // selected: true,
+        timer: window.setTimeout(function() {
+            console.log("prompt complete");
+            prompt.complete = true;
+        }, 500),
+        complete: false,
+        strokeWidth: 60,
+        strokeCap: 'round',
+        strokeColor: {
+            hue: 0,
+            saturation: 0,
+            brightness: 1,
+            alpha: 0.75
+        }
+    });
+    prompt.fade = prompt.strokeColor.alpha / (CONSTANTS.max_segments / 2.5);
+}
 
 function transformMatrix(tx, ty, s) {
     // accepts translate(x,y), scale(x,y), and angle parameters
@@ -184,6 +240,11 @@ function transformMatrix(tx, ty, s) {
 //     cx = cy = 1;
 //     return "matrix(" + (sx * Math.cos(a)) + "," + (sy * Math.sin(a)) + "," + (-sx * Math.sin(a)) + "," + (sy * Math.cos(a)) + "," + ((-cx * Math.cos(a) + cy * Math.sin(a) + cx) * sx + tx) + "," + ((-cx * Math.sin(a) - cy * Math.cos(a) + cy) * sy + ty) + ")";
 // }
+
+// returns a random number between min (inclusive) and max (exclusive)
+function getRandom(min, max) {
+    return Math.random() * (max - min) + min;
+}
 
 function constrain(value, low, high) {
     return Math.max(Math.min(value, high), low);
