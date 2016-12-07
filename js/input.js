@@ -85,14 +85,6 @@ function onMouseDrag(event) {
     if (path.segments.length >= CONSTANTS.max_segments) path.removeSegment(0);
     path.smooth();
 
-    // var vector = path.clone();
-    // var gradientColor = new Color(new Gradient(['red', 'white']), vector.lastSegment, vector.firstSegment);
-    // vector.remove();
-    // path.strokeColor = gradientColor;
-    // console.log(path.strokeColor);
-
-    lastDelta = delta;
-
     // state/touch dependent events
     if (state === STATES.WAITING && (touches >= CONSTANTS.touch_threshold * 1 / 2)) {
         // begin loading gif
@@ -105,6 +97,8 @@ function onMouseDrag(event) {
         updateGif(gifUrl);
         touches = 0;
     } else if (touches < CONSTANTS.touch_threshold) touches++;
+
+    lastDelta = delta;
 }
 
 function onMouseUp(event) {
@@ -119,9 +113,7 @@ function onMouseUp(event) {
     path.add(event.point);
     path.smooth();
     path.complete = true;
-    // path.simplify();
 
-    // displayCat();
     // console.log(touches);
 }
 
@@ -244,8 +236,8 @@ function transformMatrix(tx, ty, s) {
 //     return "matrix(" + (sx * Math.cos(a)) + "," + (sy * Math.sin(a)) + "," + (-sx * Math.sin(a)) + "," + (sy * Math.cos(a)) + "," + ((-cx * Math.cos(a) + cy * Math.sin(a) + cx) * sx + tx) + "," + ((-cx * Math.sin(a) - cy * Math.cos(a) + cy) * sy + ty) + ")";
 // }
 
-// returns a random number between min (inclusive) and max (exclusive)
 function getRandom(min, max) {
+    // returns a random number between min (inclusive) and max (exclusive)
     return Math.random() * (max - min) + min;
 }
 
