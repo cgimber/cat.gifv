@@ -191,6 +191,9 @@ function onResize() {
         name: 'pet_o_meter',
         point: view.bounds.topLeft,
         size: [view.bounds.width, CONSTANTS.meter_height],
+        shadowColor: 'black',
+        shadowBlur: 0.1,
+        shadowOffset: new Point(0, 1),
         fillColor: {
             hue: 0,
             saturation: 0,
