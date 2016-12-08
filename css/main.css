@@ -285,17 +285,12 @@ textarea {
 /* ==========================================================================
    Custom Styles
    ========================================================================== */
-.bug {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  margin: 25px;
-  width: auto;
-  height: 30px;
-  opacity: .3;
-  -ms-filter: "alpha(opacity=30)";
-  border: none;
-  outline: none; }
+.isChrome .cat,
+.isChrome .modal,
+.isChrome canvas {
+  -webkit-animation: squiggles 0.3s infinite alternate;
+  -moz-animation: squiggles 0.3s infinite alternate;
+  animation: squiggles 0.3s infinite alternate; }
 
 .cat {
   width: 100%;

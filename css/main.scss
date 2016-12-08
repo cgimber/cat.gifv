@@ -5,17 +5,12 @@
    Custom Styles
    ========================================================================== */
 
-.bug {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    margin: 25px;
-    width: auto;
-    height: 30px;
-    opacity: .3;
-    -ms-filter: "alpha(opacity=30)";
-    border: none;
-    outline: none;
+.isChrome {
+    .cat,
+    .modal,
+    canvas {
+        @include animation(squiggles 0.3s infinite alternate);
+    }
 }
 
 .cat {
@@ -59,7 +54,6 @@ canvas {
     width: 100%;
     height: 100%;
     position: absolute;
-    // @include animation(squiggles 0.3s infinite alternate);
     z-index: 2;
     cursor: -webkit-grab;
     &.canvas--input {
@@ -67,9 +61,6 @@ canvas {
     }
 }
 
-// .iOS canvas {
-//     @include animation(none);
-// }
 .noise {
     position: absolute;
     width: 100%;

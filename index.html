@@ -27,8 +27,8 @@
     <link rel="stylesheet" href="css/main.css">
     <!-- feature detection scripts go here -->
     <script type="text/javascript">
-        var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        if (iOS) document.documentElement.classList.add("iOS");
+        // squiggly svg filter animation only works in chrome rn :(
+        if (!!window.chrome && !!window.chrome.webstore) document.documentElement.classList.add("isChrome");
     </script>
 </head>
 
