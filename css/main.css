@@ -148,32 +148,32 @@ textarea {
 ----------------------------------------------------------------------------- */
 @-webkit-keyframes squiggles {
   0% {
-    -webkit-filter: url("filters.svg#squiggly-1"); }
+    -webkit-filter: url("../filters.svg#squiggly-1"); }
   25% {
-    -webkit-filter: url("filters.svg#squiggly-2"); }
+    -webkit-filter: url("../filters.svg#squiggly-2"); }
   50% {
-    -webkit-filter: url("filters.svg#squiggly-3"); }
+    -webkit-filter: url("../filters.svg#squiggly-3"); }
   75% {
-    -webkit-filter: url("filters.svg#squiggly-4"); }
+    -webkit-filter: url("../filters.svg#squiggly-4"); }
   100% {
-    -webkit-filter: url("filters.svg#squiggly-5"); } }
+    -webkit-filter: url("../filters.svg#squiggly-5"); } }
 @-moz-keyframes squiggles {}
 @keyframes squiggles {
   0% {
-    -webkit-filter: url("filters.svg#squiggly-1");
-    filter: url("filters.svg#squiggly-1"); }
+    -webkit-filter: url("../filters.svg#squiggly-1");
+    filter: url("../filters.svg#squiggly-1"); }
   25% {
-    -webkit-filter: url("filters.svg#squiggly-2");
-    filter: url("filters.svg#squiggly-2"); }
+    -webkit-filter: url("../filters.svg#squiggly-2");
+    filter: url("../filters.svg#squiggly-2"); }
   50% {
-    -webkit-filter: url("filters.svg#squiggly-3");
-    filter: url("filters.svg#squiggly-3"); }
+    -webkit-filter: url("../filters.svg#squiggly-3");
+    filter: url("../filters.svg#squiggly-3"); }
   75% {
-    -webkit-filter: url("filters.svg#squiggly-4");
-    filter: url("filters.svg#squiggly-4"); }
+    -webkit-filter: url("../filters.svg#squiggly-4");
+    filter: url("../filters.svg#squiggly-4"); }
   100% {
-    -webkit-filter: url("filters.svg#squiggly-5");
-    filter: url("filters.svg#squiggly-5"); } }
+    -webkit-filter: url("../filters.svg#squiggly-5");
+    filter: url("../filters.svg#squiggly-5"); } }
 /* noise effect
 ----------------------------------------------------------------------------- */
 @-webkit-keyframes noise {
@@ -296,7 +296,7 @@ textarea {
   width: 100%;
   height: 100%;
   position: fixed;
-  background-image: url("/img/splash.png");
+  background-image: url("../img/splash.png");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;

@@ -3,19 +3,19 @@
 
 @include keyframes(squiggles) {
     0% {
-        @include filter(url("filters.svg#squiggly-1"));
+        @include filter(url("../filters.svg#squiggly-1"));
     }
     25% {
-        @include filter(url("filters.svg#squiggly-2"));
+        @include filter(url("../filters.svg#squiggly-2"));
     }
     50% {
-        @include filter(url("filters.svg#squiggly-3"));
+        @include filter(url("../filters.svg#squiggly-3"));
     }
     75% {
-        @include filter(url("filters.svg#squiggly-4"));
+        @include filter(url("../filters.svg#squiggly-4"));
     }
     100% {
-        @include filter(url("filters.svg#squiggly-5"));
+        @include filter(url("../filters.svg#squiggly-5"));
     }
 }
 
