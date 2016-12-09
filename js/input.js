@@ -1,6 +1,7 @@
 /*
 TODOS:
-    -purring sounds
+    -sound toggle
+    -info modal
     -score popups?
     -cat paw cursors?
 */
@@ -84,12 +85,13 @@ function onMouseDrag(event) {
         // begin loading gif
         console.log("load event:", state);
         state = STATES.LOADING;
-        getCat();
+        getCat(function() { meows[randomMeow()].play(); });
     } else if (state === STATES.LOADED && touches >= CONSTANTS.touch_threshold) {
         // update css and reset touches
         console.log("update event:", state);
         updateGif(gifUrl);
         touches = 0;
+        meows[randomMeow()].play();
     } else if (touches < CONSTANTS.touch_threshold) touches++;
 
     lastDelta = delta;
