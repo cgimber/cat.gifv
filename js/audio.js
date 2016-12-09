@@ -43,22 +43,52 @@ var purr = new Howl({
 /* events
 ---------------------------------------------------------------------*/
 
-$(window).on("blur focus", function(e) {
-    var prevType = $(this).data("prevType");
+// play/pause audio on visibility change
+// makes use of the API, falling back to the less reliable blur/focus method in incompatible browsers
+// http://stackoverflow.com/questions/1060008/is-there-a-way-to-detect-if-a-browser-window-is-not-currently-active/1060034#1060034
 
-    if (prevType != e.type) { // reduce double fire issues
-        switch (e.type) {
-            case "blur":
-                purr.pause();
-                break;
-            case "focus":
-                purr.play();
-                break;
-        }
+var hidden = "hidden";
+
+// standards:
+if (hidden in document)
+    document.addEventListener("visibilitychange", onchange);
+else if ((hidden = "mozHidden") in document)
+    document.addEventListener("mozvisibilitychange", onchange);
+else if ((hidden = "webkitHidden") in document)
+    document.addEventListener("webkitvisibilitychange", onchange);
+else if ((hidden = "msHidden") in document)
+    document.addEventListener("msvisibilitychange", onchange);
+// IE 9 and lower:
+else if ("onfocusin" in document)
+    document.onfocusin = document.onfocusout = onchange;
+// all others:
+else
+    window.onpageshow = window.onpagehide = window.onfocus = window.onblur = onchange;
+
+function onchange(evt) {
+    var v = "visible",
+        h = "hidden",
+        evtMap = {
+            focus: v,
+            focusin: v,
+            pageshow: v,
+            blur: h,
+            focusout: h,
+            pagehide: h
+        };
+
+    evt = evt || window.event;
+    if (evt.type in evtMap) {
+        // document.title = evtMap[evt.type];
+        if (evtMap[evt.type] === h) purr.pause();
+        else purr.play();
     }
-
-    $(this).data("prevType", e.type);
-});
+    else {
+        // document.title = this[hidden] ? "hidden" : "visible";
+        if (this[hidden]) purr.pause();
+        else purr.play();
+    }
+}
 
 
 /* functions
