@@ -7,6 +7,7 @@ TODOS:
 
 /* globals
 ---------------------------------------------------------------------*/
+
 var center = view.bounds.center;
 var path, lastDelta,
     prompt, promptTimer,
@@ -16,7 +17,6 @@ var recievingInput = false;
 var CONSTANTS = {
     max_force: 2,
     max_segments: 8,
-    fade: 0.2,
     touch_threshold: 100,
     meter_height: 20,
     prompt_rate: 0.5,
@@ -26,20 +26,14 @@ var CONSTANTS = {
 
 /* init
 ---------------------------------------------------------------------*/
-// test = new Path.Ellipse({
-//     center: center,
-//     radius: 200,
-//     strokeWidth: 60,
-//     strokeColor: 'black',
-//     name: 'test'
-// });
+
 startPrompt();
 promptTimer = window.setInterval(startPrompt, 4000);
 
+
 /* events
 ---------------------------------------------------------------------*/
-// tool.minDistance = 10;
-// tool.maxDistance = 20;
+
 tool.fixedDistance = 10;
 
 function onMouseDown(event) {
@@ -113,8 +107,6 @@ function onMouseUp(event) {
     path.add(event.point);
     path.smooth();
     path.complete = true;
-
-    // console.log(touches);
 }
 
 function onFrame(event) {
@@ -148,9 +140,6 @@ function onFrame(event) {
                     if (hue >= 360) child.strokeColor.hue = 0;
                     else child.strokeColor.hue += 10;
                 }
-
-                // child.strokeColor.alpha -= 0.1;
-                // console.log(child.strokeColor.alpha);
 
                 // if complete, erode this path 
                 if (child.complete === true) {
@@ -194,6 +183,7 @@ function onResize() {
         }
     });
 }
+
 
 /* functions
 ---------------------------------------------------------------------*/

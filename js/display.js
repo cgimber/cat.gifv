@@ -9,6 +9,7 @@ if (Object.freeze) { Object.freeze(STATES); }
 var state = STATES.WAITING;
 var loadTimer, gifUrl;
 
+
 /* document ready
 ---------------------------------------------------------------------*/
 $(document).ready(function() {
@@ -18,9 +19,9 @@ $(document).ready(function() {
     });
 });
 
+
 /* functions
 ---------------------------------------------------------------------*/
-
 function getCat(callback) {
     $.getJSON("http://api.giphy.com/v1/gifs/random?api_key=CW27AW0nlp5u0&tag=cat&rating=r", null, function(response) {
             // console.log(response.data);
