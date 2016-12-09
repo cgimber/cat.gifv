@@ -1,26 +1,42 @@
 /* globals
 ---------------------------------------------------------------------*/
 
+Howler.mobileAutoEnable = false;
 var currMeow = 0;
 var meows = [
     new Howl({
-        src: ['../audio/meow-01.webm', '../audio/meow-01.mp3'],
+        src: ['audio/meow-01.webm', 'audio/meow-01.mp3'],
+        onload: function() {
+            console.log("loaded meow-01");
+        }
     }),
     new Howl({
-        src: ['../audio/meow-02.webm', '../audio/meow-02.mp3'],
+        src: ['audio/meow-02.webm', 'audio/meow-02.mp3'],
+        onload: function() {
+            console.log("loaded meow-02");
+        }
     }),
     new Howl({
-        src: ['../audio/meow-03.webm', '../audio/meow-03.mp3'],
+        src: ['audio/meow-03.webm', 'audio/meow-03.mp3'],
+        onload: function() {
+            console.log("loaded meow-03");
+        }
     }),
     new Howl({
-        src: ['../audio/meow-04.webm', '../audio/meow-04.mp3'],
+        src: ['audio/meow-04.webm', 'audio/meow-04.mp3'],
+        onload: function() {
+            console.log("loaded meow-04");
+        }
     })
 ];
 var purr = new Howl({
-    src: ['../audio/purr.webm', '../audio/purr.mp3'],
+    src: ['audio/purr.webm', 'audio/purr.mp3'],
     autoplay: true,
     loop: true,
     volume: 0.75,
+    onload: function() {
+        console.log("loaded purr");
+    }
 });
 
 

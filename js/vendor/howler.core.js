@@ -332,6 +332,59 @@
     },
 
     /**
+     * Mobile browsers will only allow audio to be played after a user interaction.
+     * Manually unlock audio for cases where touch events are not propagating, etc.
+     * @return {Howler}
+     */
+    _unlockMobileAudio: function() {
+      var self = this || Howler;
+
+      // Only run this on mobile devices if audio isn't already eanbled.
+      var isMobile = /iPhone|iPad|iPod|Android|BlackBerry|BB10|Silk|Mobi/i.test(self._navigator && self._navigator.userAgent);
+      var isTouch = !!(('ontouchend' in window) || (self._navigator && self._navigator.maxTouchPoints > 0) || (self._navigator && self._navigator.msMaxTouchPoints > 0));
+      if (self._mobileEnabled || !self.ctx || (!isMobile && !isTouch)) {
+        return;
+      }
+
+      self._mobileEnabled = false;
+
+      // Some mobile devices/platforms have distortion issues when opening/closing tabs and/or web views.
+      // Bugs in the browser (especially Mobile Safari) can cause the sampleRate to change from 44100 to 48000.
+      // By calling Howler.unload(), we create a new AudioContext with the correct sampleRate.
+      if (!self._mobileUnloaded && self.ctx.sampleRate !== 44100) {
+        self._mobileUnloaded = true;
+        self.unload();
+      }
+
+      // Scratch buffer for enabling iOS to dispose of web audio buffers correctly, as per:
+      // http://stackoverflow.com/questions/24119684
+      self._scratchBuffer = self.ctx.createBuffer(1, 1, 22050);
+
+      // Create an empty buffer.
+      var source = self.ctx.createBufferSource();
+      source.buffer = self._scratchBuffer;
+      source.connect(self.ctx.destination);
+
+      // Play the empty buffer.
+      if (typeof source.start === 'undefined') {
+        source.noteOn(0);
+      } else {
+        source.start(0);
+      }
+
+      // Setup a timeout to check that we are unlocked on the next event loop.
+      source.onended = function() {
+        source.disconnect(0);
+
+        // Update the unlocked state and prevent this check from happening again.
+        self._mobileEnabled = true;
+        self.mobileAutoEnable = false;
+      };
+      
+      return self;
+    },
+
+    /**
      * Automatically suspend the Web Audio AudioContext after no sound has played for 30 seconds.
      * This saves processing/energy and fixes various browser-specific bugs with audio getting stuck.
      * @return {Howler}

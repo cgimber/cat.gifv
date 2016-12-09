@@ -44,6 +44,7 @@ function onMouseDown(event) {
     if (event.count === 1) {
         clearInterval(promptTimer);
         $('.modal').fadeOut();
+        Howler._unlockMobileAudio();
     }
 
     $('canvas').addClass('canvas--input');
