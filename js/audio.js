@@ -90,6 +90,13 @@ function onchange(evt) {
     }
 }
 
+// volume toggle
+$('.toggle').click(function(event) {
+    if (!Howler._muted) Howler.mute(true);
+    else Howler.mute(false);
+    $(this).children().toggle();
+});
+
 
 /* functions
 ---------------------------------------------------------------------*/

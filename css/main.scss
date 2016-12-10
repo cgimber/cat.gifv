@@ -8,7 +8,8 @@
 .isChrome {
     .cat,
     .modal,
-    canvas {
+    canvas,
+    .toggle {
         @include animation(squiggles 0.3s infinite alternate);
     }
 }
@@ -79,6 +80,42 @@ canvas {
     top: -100%;
     background: url($base-noise-010);
     @include animation(noise 5s steps(10) infinite);
+}
+
+.toggle {
+    position: absolute;
+    @include display(flex);
+    @include flex-direction(column);
+    @include justify-content(center);
+    @include align-items(center);
+    bottom: 1em;
+    right: 1.25em;
+    width: 4rem;
+    height: 4rem;
+    line-height: initial;
+    text-align: center;
+    color: white;
+    border: 2px white solid;
+    border-radius: 4rem;
+    box-shadow: 1px 1px 0 0 black;
+    opacity: 0.5;
+    cursor: pointer;
+    z-index: 3;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    .toggle__icon {
+        width: 75%;
+        height: 75%;
+        fill: white;
+        @include filter(drop-shadow(1px 1px 0px black));
+    }
+
+    .toggle__icon--mute {
+        display: none;
+    } 
 }
 
 
