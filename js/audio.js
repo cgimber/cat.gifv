@@ -1,7 +1,6 @@
 /* globals
 ---------------------------------------------------------------------*/
 
-Howler.mobileAutoEnable = false;
 var currMeow = 0;
 var meows = [
     new Howl({
