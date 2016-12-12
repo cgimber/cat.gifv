@@ -155,7 +155,7 @@ function onFrame(event) {
     }
 
     // decrement touches when not recieving input
-    if (!recievingInput && touches > 0) touches--;
+    // if (!recievingInput && touches > 0) touches--;
 
     // update pet_o_meter
     var x = map(touches, 0, CONSTANTS.touch_threshold, -view.bounds.width / 2, view.bounds.width / 2);
