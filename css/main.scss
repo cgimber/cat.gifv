@@ -5,6 +5,12 @@
    Custom Styles
    ========================================================================== */
 
+@media only screen and (min-width: 1200px) {
+    body {
+        font-size: 2.4rem;
+    }
+}
+
 .isChrome {
     .cat,
     .modal,
@@ -45,6 +51,7 @@
 .modal__title {
     font-size: 3em;
     text-align: center;
+    margin-top: 0;
 }
 
 .modal__subtitle {
@@ -101,21 +108,18 @@ canvas {
     opacity: 0.5;
     cursor: pointer;
     z-index: 3;
-
     &:hover {
         opacity: 1;
     }
-
     .toggle__icon {
         width: 75%;
         height: 75%;
         fill: white;
         @include filter(drop-shadow(1px 1px 0px black));
     }
-
     .toggle__icon--mute {
         display: none;
-    } 
+    }
 }
 
 

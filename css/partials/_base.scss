@@ -14,6 +14,8 @@ $fallback-font-family: cursive;
 $regular: 400;
 // $bold: 600;
 
+// normalize.css
+@import '../vendor/normalize/normalize.min.scss';
 // html5 boilerplate
 @import '../modules/boilerplate';
 
