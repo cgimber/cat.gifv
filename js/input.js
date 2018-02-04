@@ -1,6 +1,5 @@
 /*
 TODOS:
-    -sound toggle
     -info modal
     -score popups?
     -cat paw cursors?
@@ -28,8 +27,7 @@ var CONSTANTS = {
 /* init
 ---------------------------------------------------------------------*/
 
-startPrompt();
-promptTimer = window.setInterval(startPrompt, 4000);
+promptTimer = window.setInterval(startPrompt, 3500);
 
 
 /* events
@@ -82,7 +80,7 @@ function onMouseDrag(event) {
     path.smooth();
 
     // state/touch dependent events
-    if (state === STATES.WAITING && (touches >= CONSTANTS.touch_threshold * 1 / 2)) {
+    if (state === STATES.WAITING && (touches >= CONSTANTS.touch_threshold * 1 / 3)) {
         // begin loading gif
         console.log("load event:", state);
         state = STATES.LOADING;
@@ -114,18 +112,20 @@ function onMouseUp(event) {
 
 function onFrame(event) {
     // update the prompt
-    if (!prompt.complete && event.count % (1 / CONSTANTS.prompt_rate) === 0) {
-        var x, y;
-        if (CONSTANTS.prompt_direction === "down") {
-            x = 0;
-            y = 10;
-        } else {
-            x = (Math.random() < 0.5) ? getRandom(-10, -5) : getRandom(5, 10);
-            y = getRandom(5, 10);
+    if (prompt !== undefined) {
+        if (!prompt.complete && event.count % (1 / CONSTANTS.prompt_rate) === 0) {
+            var x, y;
+            if (CONSTANTS.prompt_direction === "down") {
+                x = 0;
+                y = 10;
+            } else {
+                x = (Math.random() < 0.5) ? getRandom(-10, -5) : getRandom(5, 10);
+                y = getRandom(5, 10);
+            }
+            prompt.add(prompt.lastSegment.point + new Point(x, y));
+            if (prompt.segments.length >= CONSTANTS.max_segments) prompt.removeSegment(0);
+            prompt.smooth();
         }
-        prompt.add(prompt.lastSegment.point + new Point(x, y));
-        if (prompt.segments.length >= CONSTANTS.max_segments) prompt.removeSegment(0);
-        prompt.smooth();
     }
 
     // update touch path

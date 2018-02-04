@@ -23,9 +23,11 @@ $(document).ready(function() {
 /* functions
 ---------------------------------------------------------------------*/
 function getCat(callback) {
-    $.getJSON("http://api.giphy.com/v1/gifs/random?api_key=CW27AW0nlp5u0&tag=cat&rating=r", null, function(response) {
+    $.getJSON("https://api.giphy.com/v1/gifs/random?api_key=CW27AW0nlp5u0&tag=cat", null, function(response) {
             // console.log(response.data);
-            gifUrl = response.data.image_original_url;
+            if (isMobile) gifUrl = response.data.fixed_height_downsampled_url;
+            else gifUrl = response.data.image_original_url;
+            // gifUrl = response.data.image_original_url;
             // console.log(gifUrl);
 
             console.log("load start");
